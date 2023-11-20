@@ -89,8 +89,28 @@ export const StarIcon = styled.img`
   height: 24px;
 `;
 
-export const ArrowIcon = styled.span`
-  color: ${({ isPositive }) => (isPositive ? '#16C784' : '#EA3943')};
+export const BackgroundInfo = styled.div`
+  display: flex;
+
+  width: 16px;
+  height: 18px;
+
+  background-color: #A6B0C3;
+
+  border-radius: 50%;
+
+  align-items: center;
+  justify-content: center;
+`;
+
+export const InfoText = styled.p`
+  color: #FFF;
+  text-align: center;
+  font-family: Times New Roman;
+  font-size: 16px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: normal;
 `;
 
 export const StarCheckbox = styled.input`

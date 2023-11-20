@@ -29,7 +29,7 @@ const FavoriteCard = (props) => {
             {title}
           </Title>
           <img
-            src={percent.includes("+") ? positiveArrow : negativeArrow}
+            src={percent && percent?.includes("+") ? positiveArrow : negativeArrow}
             alt=""
             style={{ width: 9, height: 13 }}
           />
@@ -40,7 +40,7 @@ const FavoriteCard = (props) => {
           </MoneyText>
         </div>
         <div style={{ height: 19 }}>
-          <MoneyText style={{ color: percent.includes("+") ? "#16C784" : "#EA3943" }}>
+          <MoneyText style={{ color: percent?.includes("+") ? "#16C784" : "#EA3943" }}>
             {percent}
           </MoneyText>
         </div>
