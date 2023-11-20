@@ -75,6 +75,7 @@ const CryptoTable = (props) => {
       .then((res) => {
         [res].forEach((item) => {
           console.log("ID: ", item?.id);
+          
           cloudFavorite.forEach((favoriteCoin) => {
             if (favoriteCoin?.id === item?.id) {
               console.log(`ID: ${favoriteCoin?.id}: ${favoriteCoin?.checkbox}`);
