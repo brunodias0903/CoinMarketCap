@@ -3,14 +3,15 @@ import styled from "styled-components";
 export const Container = styled.div`
   display: flex;
 
-  width: 240px;
   height: 118px;
 
   display: flex;
   flex-direction: row;
   
-  padding-left: 24px;
-  padding-right: 24px;
+  padding-left: 30px;
+  padding-right: 30px;
+
+  box-sizing: border-box;
 
   border-radius: 8px;
   border: 1px solid #e5e5e5;
@@ -20,7 +21,6 @@ export const Container = styled.div`
 `;
 
 export const Title = styled.h1`
-  width: 28px;
 
   color: #1E3146;
   text-align: center;
@@ -36,7 +36,7 @@ export const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
 
-  align-items: start;
+  justify-content: center;
 `;
 
 export const MoneyText = styled.p`

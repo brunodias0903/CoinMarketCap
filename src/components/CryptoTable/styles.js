@@ -92,3 +92,39 @@ export const StarIcon = styled.img`
 export const ArrowIcon = styled.span`
   color: ${({ isPositive }) => (isPositive ? '#16C784' : '#EA3943')};
 `;
+
+export const StarCheckbox = styled.input`
+  display: none;
+
+  + label {
+    cursor: pointer;
+    padding: 0;
+    position: relative;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 0.5px solid #a7b1c2;
+    background-color: transparent;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+
+  &:checked + label {
+    background-color: #f6b87e;
+    border: 0;
+  }
+
+  &:checked + label::before {
+    content: '\2605'; /* Código Unicode para a estrela */
+    font-size: 14px;
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+`;
+
+export const StarCheckboxWrapper = styled.div`
+  display: inline-block;
+  margin-right: 10px;
+`;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ArrowIcon, BuyButton, CircleIcon, InfoIcon, StarIcon, Table, TableCell, TableContainer, TableHeader, TableRow } from "./styles";
+import { ArrowIcon, BuyButton, CircleIcon, InfoIcon, StarCheckbox, StarCheckboxWrapper, StarIcon, Table, TableCell, TableContainer, TableHeader, TableRow } from "./styles";
 import favoriteMarked from "../../assets/favorite_marked.svg";
 import favoriteUnmarked from "../../assets/favorite_unmarked.svg";
 import useAxios from "../../hooks/useAxios";
@@ -20,10 +20,27 @@ const CryptoTable = (props) => {
     }
   }, []);
 
+  function isFavorite(id) {
+    favorites.forEach((item) => {
+      if (item.id === id) {
+        return true;
+      }
+    });
+
+    return false;
+  }
+
   const toggleFavorite = (crypto) => {
-    const isFavorite = favorites.includes(crypto);
+    var isFavorite = false;
+
+    favorites.forEach((item) => {
+      if (item.id === crypto.id) {
+        isFavorite = true;
+      }
+    });
+
     if (isFavorite) {
-      setFavorites(favorites.filter((item) => item !== crypto));
+      setFavorites(favorites.filter((item) => item.id !== crypto.id));
     } else {
       setFavorites([...favorites, crypto]);
     }
@@ -40,10 +57,18 @@ const CryptoTable = (props) => {
   }
 
   function slicePercentage(num) {
-    if(num > 0) {
-      return `${num.toString().slice(0,3)}%`;
+    if (num > 0) {
+      return `${num.toString().slice(0, 3)}%`;
     } else {
-      return `${num.toString().slice(0,4)}%`;
+      return `${num.toString().slice(0, 4)}%`;
+    }
+  }
+
+  function cardPercentage(num) {
+    if (num > 0) {
+      return `+${num.toString().slice(0, 4).replace(".", ",")}%`;
+    } else {
+      return `${num.toString().slice(0, 5).replace(".", ",")}%`;
     }
   }
 
@@ -67,7 +92,7 @@ const CryptoTable = (props) => {
             place={index + 1}
             title={(item.symbol).toUpperCase()}
             money={formatMoney(item.current_price)}
-            percent="+10,44%"
+            percent={cardPercentage(item.price_change_percentage_24h_in_currency)}
           />
         ))}
       </div>
@@ -91,9 +116,20 @@ const CryptoTable = (props) => {
             {topCoinList.map((crypto, index) => {
               return <TableRow key={crypto.id}>
                 <TableCell>
-                  <div onClick={() => toggleFavorite(crypto)}>
-                    <StarIcon src={favorites.includes(crypto) ? favoriteMarked : favoriteUnmarked} alt="" />
-                  </div>
+                  {/* <div onClick={() => toggleFavorite(crypto)}>
+                    {isFavorite(crypto.id)}
+                  </div> */}
+
+                  <StarCheckboxWrapper>
+                    <StarCheckbox
+                      type="checkbox"
+                      id="starCheckbox"
+                      checked={isFavorite(crypto.id)}
+                      onChange={toggleFavorite(crypto.id)}
+                    />
+                    <label htmlFor="starCheckbox" />
+                  </StarCheckboxWrapper>
+
                 </TableCell>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>
@@ -146,7 +182,7 @@ const CryptoTable = (props) => {
                     fontStyle: "normal",
                     fontWeight: 600,
                     lineHeight: "normal",
-                  }}>${formatMoney(crypto.market_cap)}</p>
+                  }}>{formatMoney(crypto.market_cap)}</p>
                 </TableCell>
               </TableRow>
             })}
