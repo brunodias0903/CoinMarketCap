@@ -1,33 +1,78 @@
-import React, { useEffect } from "react";
-import { ArrowIcon, BuyButton, CircleIcon, InfoIcon, StarIcon, Table, TableCell, TableHeader, TableRow } from "./styles";
+import React, { useEffect, useState } from "react";
+import { ArrowIcon, BuyButton, CircleIcon, InfoIcon, StarIcon, Table, TableCell, TableContainer, TableHeader, TableRow } from "./styles";
 import favoriteMarked from "../../assets/favorite_marked.svg";
 import favoriteUnmarked from "../../assets/favorite_unmarked.svg";
 import useAxios from "../../hooks/useAxios";
 import FavoriteCard from "../FavoriteCard";
+import { getFavorites, saveFavorites } from "../../utils/favoritesStorage";
 
 const CryptoTable = (props) => {
-  const { response } = useAxios('search/trending');
+  const { response } = useAxios('coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=24h%2C7d&locale=en');
+  const [favorites, setFavorites] = useState([]);
 
-  const toggleFavorite = (id) => {
-    const isFavorite = props.favorites.includes(id);
-    if (isFavorite) {
-      props.setFavorites(props.favorites.filter((favId) => favId !== id));
-    } else {
-      props.setFavorites([...props.favorites, id]);
+  const [topCoinList, setTopCoinList] = useState([]);
+
+  useEffect(() => {
+    const localStorageList = getFavorites();
+
+    if (localStorageList) {
+      setFavorites(localStorageList);
     }
+  }, []);
+
+  const toggleFavorite = (crypto) => {
+    const isFavorite = favorites.includes(crypto);
+    if (isFavorite) {
+      setFavorites(favorites.filter((item) => item !== crypto));
+    } else {
+      setFavorites([...favorites, crypto]);
+    }
+
+    saveFavorites(favorites);
   };
+
+  function formatMoney(value) {
+    const formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+    return formatter.format(value);
+  }
+
+  function slicePercentage(num) {
+    if(num > 0) {
+      return `${num.toString().slice(0,3)}%`;
+    } else {
+      return `${num.toString().slice(0,4)}%`;
+    }
+  }
+
+  useEffect(() => {
+    if (response) {
+      const sortCoins = response.sort((a, b) => b.current_price - a.current_price);
+      const topTenCoins = sortCoins.slice(0, 10);
+
+      setTopCoinList(topTenCoins);
+    }
+  }, [response]);
 
   return (
     <>
-      <div style={{ width: "100%", gap: 32, display: "flex", flexDirection: "row", overflowX: "auto", whiteSpace: "nowrap" }}>
-        <FavoriteCard place="1" title="BTC" money="R$ 1.844,39" percent="+10,44%" />
-        <FavoriteCard place="1" title="BTC" money="R$ 1.844,39" percent="+10,44%" />
-        <FavoriteCard place="1" title="BTC" money="R$ 1.844,39" percent="+10,44%" />
-        <FavoriteCard place="1" title="BTC" money="R$ 1.844,39" percent="+10,44%" />
-        <FavoriteCard place="1" title="BTC" money="R$ 1.844,39" percent="+10,44%" />
+      {favorites.length !== 0 && <p style={{ fontFamily: "Inter", fontWeight: 700, fontSize: 16, color: "#000000" }}>
+        Favoritos
+      </p>}
+      <div style={{ width: "100%", gap: 30, display: "flex", flexDirection: "row", overflowX: "auto", whiteSpace: "nowrap" }}>
+        {favorites.map((item, index) => (
+          <FavoriteCard
+            place={index + 1}
+            title={(item.symbol).toUpperCase()}
+            money={formatMoney(item.current_price)}
+            percent="+10,44%"
+          />
+        ))}
       </div>
-      <div style={{ display: "flex", height: "40%", overflowY: "scroll", marginTop: "7vh" }}>
-        <Table>
+      <TableContainer>
+        <Table style={{ borderCollapse: "collapse" }}>
           <thead>
             <TableRow>
               <TableHeader style={{ width: "40px" }}></TableHeader>
@@ -43,17 +88,17 @@ const CryptoTable = (props) => {
             </TableRow>
           </thead>
           <tbody>
-            {response && response.coins.map((crypto, item) => (
-              <TableRow key={crypto.item.coin_id}>
+            {topCoinList.map((crypto, index) => {
+              return <TableRow key={crypto.id}>
                 <TableCell>
-                  <div onClick={() => toggleFavorite(crypto.item.coin_id)}>
-                    <StarIcon src={props.favorites.includes(crypto.item.coin_id) ? favoriteMarked : favoriteUnmarked} alt="" />
+                  <div onClick={() => toggleFavorite(crypto)}>
+                    <StarIcon src={favorites.includes(crypto) ? favoriteMarked : favoriteUnmarked} alt="" />
                   </div>
                 </TableCell>
-                <TableCell>{crypto.item.score + 1}</TableCell>
+                <TableCell>{index + 1}</TableCell>
                 <TableCell>
                   <div style={{ display: "flex", width: "60%", flexDirection: "row", alignItems: "center", justifyContent: "" }}>
-                    <CircleIcon src={crypto.item.small} alt="" />
+                    <CircleIcon src={crypto.image} alt="" />
                     <p style={{
                       color: "#000",
                       fontFamily: "Inter",
@@ -62,9 +107,9 @@ const CryptoTable = (props) => {
                       fontWeight: 600,
                       lineHeight: "normal",
                       marginLeft: 8,
-                    }}>{crypto.item.name}</p>
+                    }}>{crypto.name}</p>
                     <p style={{ color: "#A7B1C2", fontFamily: "Inter", fontSize: 16, fontStyle: "normal", fontWeight: 400, lineHeight: "normal", marginLeft: 8 }}>
-                      {crypto.item.symbol}
+                      {(crypto.symbol).toUpperCase()}
                     </p>
                     <BuyButton style={{ marginLeft: 12 }}>Buy</BuyButton>
                   </div>
@@ -78,18 +123,18 @@ const CryptoTable = (props) => {
                     fontStyle: "normal",
                     fontWeight: 600,
                     lineHeight: "normal",
-                  }}>${crypto.price}</p>
+                  }}>{formatMoney(crypto.current_price)}</p>
                 </TableCell>
                 <TableCell>
                   <div style={{ display: "flex", justifyContent: "end" }}>
-                    <ArrowIcon isPositive={crypto.percent24h >= 0 ? true : false}>{crypto.percent24h >= 0 ? '↑' : '↓'}</ArrowIcon>
-                    <span style={{ textAlign: "right", color: crypto.percent24h >= 0 ? '#16C784' : '#EA3943' }}>{crypto.percent24h}%</span>
+                    <ArrowIcon isPositive={crypto.price_change_percentage_24h_in_currency >= 0 ? true : false}>{crypto.price_change_percentage_24h_in_currency >= 0 ? '↑' : '↓'}</ArrowIcon>
+                    <span style={{ textAlign: "right", color: crypto.price_change_percentage_24h_in_currency >= 0 ? '#16C784' : '#EA3943' }}>{slicePercentage(crypto.price_change_percentage_24h_in_currency)}</span>
                   </div>
                 </TableCell>
                 <TableCell>
                   <div style={{ display: "flex", justifyContent: "end" }}>
-                    <ArrowIcon isPositive={crypto.percent7d >= 0 ? true : false}>{crypto.percent7d >= 0 ? '↑' : '↓'}</ArrowIcon>
-                    <span style={{ color: crypto.percent7d >= 0 ? '#16C784' : '#EA3943' }}>{crypto.percent7d}%</span>
+                    <ArrowIcon isPositive={crypto.price_change_percentage_7d_in_currency >= 0 ? true : false}>{crypto.price_change_percentage_7d_in_currency >= 0 ? '↑' : '↓'}</ArrowIcon>
+                    <span style={{ color: crypto.price_change_percentage_7d_in_currency >= 0 ? '#16C784' : '#EA3943' }}>{slicePercentage(crypto.price_change_percentage_7d_in_currency)}</span>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -101,13 +146,13 @@ const CryptoTable = (props) => {
                     fontStyle: "normal",
                     fontWeight: 600,
                     lineHeight: "normal",
-                  }}>${crypto.marketCap}</p>
+                  }}>${formatMoney(crypto.market_cap)}</p>
                 </TableCell>
               </TableRow>
-            ))}
+            })}
           </tbody>
         </Table>
-      </div>
+      </TableContainer>
     </>
   );
 };

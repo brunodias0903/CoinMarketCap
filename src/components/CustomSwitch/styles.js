@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { deviceMin } from "../../utils/responsive";
 
 export const SwitchContainer = styled.div`
   width: 55px;
@@ -9,6 +10,11 @@ export const SwitchContainer = styled.div`
   align-items: center;
   padding: 2px;
   cursor: pointer;
+
+  @media ${deviceMin.laptopL} {
+    width: 50px;
+    height: 21px;
+  }
 `;
 
 export const Slider = styled.div`
@@ -18,4 +24,9 @@ export const Slider = styled.div`
   background: #ffffff;
   transform: translateX(${({ isActive }) => (isActive ? '29px' : '2px')});
   transition: transform 0.3s ease-in-out;
+
+  @media ${deviceMin.laptopL} {
+    width: 18px;
+    height: 18px;
+  }
 `;

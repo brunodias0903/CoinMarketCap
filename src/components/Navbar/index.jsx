@@ -4,7 +4,7 @@ import notificationIcon from "../../assets/notification-point.svg";
 import diamondIcon from "../../assets/diamond.svg";
 import SearchBar from "./SearchBar";
 
-function Navbar() {
+function Navbar(props) {
   const headerItems = [
     { title: "Cryptocurrencies", hasNotification: false },
     { title: "Exchanges", hasNotification: false },
@@ -44,7 +44,7 @@ function Navbar() {
           </HeaderItemText>
         </SignInButton>
 
-        <SearchBar />
+        <SearchBar setSearchValue={props.setSearchValue} />
       </LoginSearchContainer>
     </Container>
   );

@@ -1,4 +1,24 @@
 import styled from 'styled-components';
+import { deviceMin } from '../../utils/responsive';
+
+export const TableContainer = styled.div`
+  display: flex;
+
+  width: 100%;
+  height: 40%;
+
+  margin-top: 7vh;
+
+  overflow-y: auto;
+
+  @media ${deviceMin.laptopL} {
+    height: 45%;
+  }
+
+  @media ${deviceMin.desktop} {
+    height: 50%;
+  }
+`;
 
 export const Table = styled.table`
   width: 100%;
@@ -18,9 +38,13 @@ export const TableHeader = styled.th`
 `;
 
 export const TableRow = styled.tr`
-  height: 72px;
+  height: 70px;
 
-  border-bottom: 1px solid #000;
+  border-bottom: 0.5px solid #A7B1C2;
+
+  @media ${deviceMin.desktop} {
+    height: 75px;
+  }
 `;
 
 export const TableCell = styled.td`
