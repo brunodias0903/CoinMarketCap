@@ -239,8 +239,6 @@ const CryptoTable = (props) => {
             setResponse(null);
             props.setSearchValue("");
 
-            console.log(JSON.stringify(topCoinList[0]));
-
             topAllCoin.forEach((item, index) => {
               if (item.name === crypto.name) {
                 navigate("/info_coin", { state: { coin: crypto, coinPlace: index + 1, firstPlaceCoin: topCoinList[0] } });
