@@ -124,11 +124,24 @@ export const CoinPlaceTitle = styled.span`
 
 export const PricePercentContainer = styled.div`
   display: flex;
-  padding: 8px 10px 8px 24px;
-  align-items: flex-start;
-  gap: 16px;
+  flex-direction: row;
+
+  height: 31px;
+
+  padding-left: 8px;
+  padding-right: 8px;
+  align-items: center;
+  gap: 8px;
 
   border-radius: 8px;
-  background: #16C784;
   box-shadow: 5px 15px 30px 0px rgba(126, 126, 177, 0.10);
+`;
+
+export const PricePercentText = styled.span`
+  color: #F8FAFD;
+  font-family: Inter;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
 `;

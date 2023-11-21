@@ -5,8 +5,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 
 //Pages
-import Home from "./pages/Home";
-import InfoCoin from "./pages/InfoCoin";
+import Home from "./pages/home/index.jsx";
+import InfoCoin from "./pages/InfoCoin/index.jsx";
 
 function App() {
   const [searchValue, setSearchValue] = useState('');
