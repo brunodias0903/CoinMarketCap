@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-axios.defaults.baseURL = "https://api.coingecko.com/api/v3";
-
 const useAxios = ({ url, method }) => {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState('');

@@ -41,11 +41,14 @@ function InfoCoin() {
   const firstPlaceCoin = location.state.firstPlaceCoin;
   const favorites = getFavorites();
 
-  const firstUrl = `coins/${firstPlaceCoin.id}`;
-  const actualUrl = `coins/${coin.id}`;
+  const baseCoinUrl = "https://api.coingecko.com/api/v3";
+  const baseGhUrl = "https://api.github.com";
 
-  const ghUserUrl = `users/${coin.id}`;
-  const ghRepoUrl = `repos/${coin.id}/${coin.id}`;
+  const firstUrl = `${baseCoinUrl}/coins/${firstPlaceCoin.id}`;
+  const actualUrl = `${baseCoinUrl}/coins/${coin.id}`;
+
+  const ghUserUrl = `${baseGhUrl}/users/${coin.id}`;
+  const ghRepoUrl = `${baseGhUrl}/repos/${coin.id}/${coin.id}`;
 
   const firstResponse = useAxios({method: 'get',  url: firstUrl}).response;
   const firstError = useAxios({method: 'get', url: firstUrl}).error;
@@ -62,8 +65,6 @@ function InfoCoin() {
   const repoGhResponse = useGhAxios({method: 'get', url: ghRepoUrl}).response;
   const repoGhError = useGhAxios({method: 'get', url: ghRepoUrl}).error;
   const repoGhLoading = useGhAxios({method: 'get', url: ghRepoUrl}).loading;
-
-  //const gitHubUserResponse = useAxios({method: 'get', url: ''});
 
   const [firstData, setFirstData] = useState([]);
 
@@ -106,7 +107,7 @@ function InfoCoin() {
     }
   }, [repoGhResponse]);
 
-  if (firstLoading || actualLoading ) {
+  if (firstLoading || actualLoading || userGhLoading || repoGhLoading ) {
     return (
       <div
         style={{

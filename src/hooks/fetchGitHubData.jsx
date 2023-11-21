@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-axios.defaults.baseURL = "https://api.github.com";
-
 const useGhAxios = ({ url, method }) => {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState('');
