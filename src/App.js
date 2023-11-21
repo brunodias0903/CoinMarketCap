@@ -5,8 +5,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 
 //Pages
-import Home from "./pages/home/index.jsx";
-import InfoCoin from "./pages/InfoCoin/index.jsx";
+import HomePage from "./pages/Home/index";
+import CoinInfoPage from "./pages/InfoCoin/index";
 
 function App() {
   const [searchValue, setSearchValue] = useState('');
@@ -24,8 +24,8 @@ function App() {
       <BrowserRouter>
         <Navbar searchValue={searchValue} setSearchValue={setSearchValue} />
         <Routes>
-          <Route path="/" element={<Home searchValue={debounceSearchValue} setSearchValue={setSearchValue} />} />
-          <Route path="/info_coin" element={<InfoCoin />} />
+          <Route path="/" element={<HomePage searchValue={debounceSearchValue} setSearchValue={setSearchValue} />} />
+          <Route path="/info_coin" element={<CoinInfoPage />} />
         </Routes>
       </BrowserRouter>
     </div>

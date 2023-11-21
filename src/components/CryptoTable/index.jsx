@@ -62,8 +62,6 @@ const CryptoTable = (props) => {
 
   const [order, setOrder] = useState(true);
 
-  const notify = () => toast(error);
-
   function checkboxChange(index) {
     var actualTopCoinList = topCoinList;
     var newFavoriteList = [];
@@ -189,13 +187,6 @@ const CryptoTable = (props) => {
       setSearchList(searchListUpdated);
     }
   }, [searchResponse]);
-
-  useEffect(() => {
-    if (error !== "") {
-      notify();
-      setError("");
-    }
-  }, [error, notify]);
 
   function tableRowReturn(crypto, index, flag) {
     return <TableRow
@@ -367,7 +358,6 @@ const CryptoTable = (props) => {
   if (props.searchValue !== "") {
     return (
       <>
-        <ToastContainer />
         {favorites.length !== 0 && (
           <p
             style={{
