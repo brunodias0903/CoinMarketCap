@@ -1,7 +1,12 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./pages/home";
-import Navbar from "./components/Navbar";
 import { useEffect, useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+//Components
+import Navbar from "./components/Navbar";
+
+//Pages
+import Home from "./pages/Home";
+import InfoCoin from "./pages/InfoCoin";
 
 function App() {
   const [searchValue, setSearchValue] = useState('');
@@ -16,10 +21,11 @@ function App() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "97.7vh", overflow: "hidden" }}>
-      <Navbar setSearchValue={setSearchValue} />
       <BrowserRouter>
+        <Navbar searchValue={searchValue} setSearchValue={setSearchValue} />
         <Routes>
-          <Route path="/" element={<Home searchValue={debounceSearchValue} />} />
+          <Route path="/" element={<Home searchValue={debounceSearchValue} setSearchValue={setSearchValue} />} />
+          <Route path="/info_coin" element={<InfoCoin />} />
         </Routes>
       </BrowserRouter>
     </div>

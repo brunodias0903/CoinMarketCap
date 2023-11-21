@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
 import CryptoTable from "../../components/CryptoTable";
 import CustomSwitch from "../../components/CustomSwitch";
-import FavoriteCard from "../../components/FavoriteCard";
 import { Container, HighlightsTitle, PriceTitle } from "./styles";
 
 function Home(props) {
@@ -16,7 +14,7 @@ function Home(props) {
           </div>
         </div>
 
-        <CryptoTable searchValue={props.searchValue} />
+        <CryptoTable searchValue={props.searchValue} setSearchValue={props.setSearchValue} />
     </Container>
   );
 }

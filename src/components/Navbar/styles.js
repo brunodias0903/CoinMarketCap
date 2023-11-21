@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { deviceMin, deviceMax } from '../../utils/responsive';
+import { deviceMin } from '../../utils/responsive';
 
 export const Container = styled.div`
   display: flex;
@@ -69,6 +69,8 @@ export const HeaderItemText = styled.p`
   font-family: "Inter", sans-serif;
   font-size: 16px;
   font-weight: 500;
+
+  cursor: pointer;
 
   @media ${deviceMin.laptop} {
     font-size: 12px;

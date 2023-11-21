@@ -3,6 +3,7 @@ import logoSvg from "../../assets/navbar-logo.svg";
 import notificationIcon from "../../assets/notification-point.svg";
 import diamondIcon from "../../assets/diamond.svg";
 import SearchBar from "./SearchBar";
+import { useNavigate } from "react-router-dom";
 
 function Navbar(props) {
   const headerItems = [
@@ -15,10 +16,14 @@ function Navbar(props) {
     { title: "Products", hasNotification: false },
   ];
 
+  const navigate = useNavigate();
+
   return (
     <Container>
       <LogoItemsContainer>
-        <LogoImage src={logoSvg} alt="" />
+        <div style={{ cursor: "pointer" }} onClick={() => navigate("/")}>
+          <LogoImage src={logoSvg} alt="" />
+        </div>
 
         <HeaderItemContainer style={{ display: "flex", gap: 15 }}>
           {headerItems.map((item, index) => {
@@ -33,18 +38,18 @@ function Navbar(props) {
       </LogoItemsContainer>
 
       <LoginSearchContainer>
-        <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", cursor: "pointer" }}>
           <img src={diamondIcon} alt="" style={{ width: 22.5, height: 20 }} />
           <HeaderItemText style={{ marginLeft: 8 }}>Log In</HeaderItemText>
         </div>
 
-        <SignInButton style={{ marginLeft: 25, marginRight: 12 }} >
+        <SignInButton style={{ marginLeft: 25, marginRight: 12, cursor: "pointer" }} >
           <HeaderItemText style={{ color: "#FFFFFF" }}>
             Sign Up
           </HeaderItemText>
         </SignInButton>
 
-        <SearchBar setSearchValue={props.setSearchValue} />
+        <SearchBar searchValue={props.searchValue} setSearchValue={props.setSearchValue} />
       </LoginSearchContainer>
     </Container>
   );

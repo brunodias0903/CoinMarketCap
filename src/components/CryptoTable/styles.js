@@ -113,38 +113,25 @@ export const InfoText = styled.p`
   line-height: normal;
 `;
 
+export const StarWrapper = styled.label`
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+`;
+
 export const StarCheckbox = styled.input`
-  display: none;
+  visibility: hidden;
 
-  + label {
-    cursor: pointer;
-    padding: 0;
-    position: relative;
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 0.5px solid #a7b1c2;
-    background-color: transparent;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-  }
-
-  &:checked + label {
-    background-color: #f6b87e;
-    border: 0;
-  }
-
-  &:checked + label::before {
-    content: '\2605'; /* Código Unicode para a estrela */
-    font-size: 14px;
-    color: #fff;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  &:checked + img:before {
+    content: "\2606";
   }
 `;
 
-export const StarCheckboxWrapper = styled.div`
-  display: inline-block;
-  margin-right: 10px;
+export const StarImage = styled.img`
+  content: "\2605";
+  font-size: 30px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
 `;
