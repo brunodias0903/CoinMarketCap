@@ -41,7 +41,7 @@ import { useNavigate } from "react-router-dom";
 
 const CryptoTable = (props) => {
   const navigate = useNavigate();
-  
+
   const baseUrl = "https://api.coingecko.com/api/v3";
   const requisitionUrl =
     "coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=24h%2C7d&locale=en";
@@ -56,6 +56,7 @@ const CryptoTable = (props) => {
 
   const [favorites, setFavorites] = useState([]);
 
+  const [topAllCoin, setTopAllCoin] = useState([]);
   const [topCoinList, setTopCoinList] = useState([]);
   const [searchList, setSearchList] = useState([]);
 
@@ -130,6 +131,10 @@ const CryptoTable = (props) => {
   }
 
   useEffect(() => {
+    props.setSearchValue("");
+  }, []);
+
+  useEffect(() => {
     setLoading(true);
     if (props.searchValue === "") {
       if (response === null) {
@@ -138,6 +143,9 @@ const CryptoTable = (props) => {
         const sortCoins = response.data.sort(
           (a, b) => b.current_price - a.current_price
         );
+        
+        setTopAllCoin(sortCoins);
+
         const topTenCoins = sortCoins.slice(0, 10);
 
         if (props.searchValue === "") {
@@ -237,11 +245,16 @@ const CryptoTable = (props) => {
             {crypto.symbol.toUpperCase()}
           </p>
           <BuyButton style={{ marginLeft: 12 }} onClick={() => {
-            if (!flag) {
-              setResponse(null);
-              props.setSearchValue("");
-              navigate("/info_coin", { state: { coin: crypto } });
-            }
+            setResponse(null);
+            props.setSearchValue("");
+
+            console.log(JSON.stringify(topCoinList[0]));
+
+            topAllCoin.forEach((item, index) => {
+              if (item.name === crypto.name) {
+                navigate("/info_coin", { state: { coin: crypto, coinPlace: index + 1, firstPlaceCoin: topCoinList[0] } });
+              }
+            });
           }}>Buy</BuyButton>
         </div>
       </TableCell>
