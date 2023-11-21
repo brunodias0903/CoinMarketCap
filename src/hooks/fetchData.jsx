@@ -6,6 +6,8 @@ const useAxios = ({ url, method }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  axios.defaults.baseURL = "https://api.coingecko.com/api/v3";
+
   const fetchData = () => {
     axios[method](url)
       .then((res) => {

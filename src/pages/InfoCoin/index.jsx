@@ -32,7 +32,6 @@ import { ReactComponent as NegativeArrow } from "../../assets/negative_arrow.svg
 import FavoriteIcon from "../../assets/favorite-icon.svg";
 import GitInfoCard from "../../components/GitInfoCard";
 import useAxios from "../../hooks/fetchData";
-import useGhAxios from "../../hooks/fetchGitHubData";
 
 function InfoCoin() {
   const location = useLocation();
@@ -41,37 +40,36 @@ function InfoCoin() {
   const firstPlaceCoin = location.state.firstPlaceCoin;
   const favorites = getFavorites();
 
-  const baseCoinUrl = "https://api.coingecko.com/api/v3";
   const baseGhUrl = "https://api.github.com";
 
-  const firstUrl = `${baseCoinUrl}/coins/${firstPlaceCoin.id}`;
-  const actualUrl = `${baseCoinUrl}/coins/${coin.id}`;
+  const firstUrl = `coins/${firstPlaceCoin.id}`;
+  const actualUrl = `coins/${coin.id}`;
 
-  const ghUserUrl = `${baseGhUrl}/users/${coin.id}`;
-  const ghRepoUrl = `${baseGhUrl}/repos/${coin.id}/${coin.id}`;
+  const [ghUserUrl, setGhUserUrl] = useState('');
+  const [ghRepoUrl, setGhRepoUrl] = useState('');
 
-  const firstResponse = useAxios({method: 'get',  url: firstUrl}).response;
-  const firstError = useAxios({method: 'get', url: firstUrl}).error;
-  const firstLoading = useAxios({method: 'get', url: firstUrl}).loading;
+  const firstResponse = useAxios({ method: 'get', url: firstUrl }).response;
+  const firstError = useAxios({ method: 'get', url: firstUrl }).error;
+  const firstLoading = useAxios({ method: 'get', url: firstUrl }).loading;
 
-  const actualResponse = useAxios({method: 'get', url: actualUrl}).response;
-  const actualError = useAxios({method: 'get',  url: actualUrl}).error;
-  const actualLoading = useAxios({method: 'get',  url: actualUrl}).loading;
+  const actualResponse = useAxios({ method: 'get', url: actualUrl }).response;
+  const actualError = useAxios({ method: 'get', url: actualUrl }).error;
+  const actualLoading = useAxios({ method: 'get', url: actualUrl }).loading;
 
-  const userGhResponse = useGhAxios({method: 'get', url: ghUserUrl}).response;
-  const userGhError = useGhAxios({method: 'get', url: ghUserUrl}).error;
-  const userGhLoading = useGhAxios({method: 'get', url: ghUserUrl}).loading;
+  const [userGhResponse, setUserGhResponse] = useState(null);
+  const [userGhError, setUserGhError] = useState('');
+  const [userGhLoading, setUserGhLoading] = useState(false);
 
-  const repoGhResponse = useGhAxios({method: 'get', url: ghRepoUrl}).response;
-  const repoGhError = useGhAxios({method: 'get', url: ghRepoUrl}).error;
-  const repoGhLoading = useGhAxios({method: 'get', url: ghRepoUrl}).loading;
+  var [repoGhResponse, setRepoGhResponse] = useState(null);
+  var [repoGhError, setRepoGhError] = useState('');
+  var [repoGhLoading, setRepoGhLoading] = useState(false);
 
   const [firstData, setFirstData] = useState([]);
 
   const [actualData, setActualData] = useState([]);
 
   const [userGhData, setUserGhData] = useState(null);
-  
+
   const [repoGhData, setRepoGhData] = useState([]);
 
   useEffect(() => {
@@ -85,6 +83,7 @@ function InfoCoin() {
 
   useEffect(() => {
     if (actualResponse !== null) {
+      setGhRepoUrl(`${baseGhUrl}/repos/${actualResponse.links.repos_url.github[0].substring(19)}`);
       setActualData([
         actualResponse?.market_data?.price_change_24h_in_currency?.usd,
         actualResponse?.market_data?.price_change_percentage_24h,
@@ -93,21 +92,48 @@ function InfoCoin() {
   }, [actualResponse]);
 
   useEffect(() => {
-    if (userGhResponse !== null) {
-      setUserGhData(userGhResponse?.followers);
+    if (ghUserUrl !== null) {
+      setUserGhLoading(true);
+
+      fetch(ghUserUrl)
+        .then((response) => response.json())
+        .then((json) => {
+          setUserGhResponse(json);
+          setUserGhData(json?.followers);
+        })
+        .catch((err) => {
+          setUserGhError(err);
+        })
+        .finally(() => {
+          setUserGhLoading(false);
+        });
     }
-  }, [userGhResponse]);
+  }, [ghUserUrl]);
 
   useEffect(() => {
-    if (repoGhResponse) {
-      setRepoGhData([
-        repoGhResponse?.stargazers_count,
-        repoGhResponse?.forks,
-      ]);
-    }
-  }, [repoGhResponse]);
+    if (ghRepoUrl !== '') {
+      setRepoGhLoading(true);
 
-  if (firstLoading || actualLoading || userGhLoading || repoGhLoading ) {
+      fetch(ghRepoUrl)
+        .then((response) => response.json())
+        .then((json) => {
+          setGhUserUrl(json.owner.url);
+          setRepoGhResponse(json);
+          setRepoGhData([
+            json?.stargazers_count,
+            json?.forks,
+          ]);
+        })
+        .catch((err) => {
+          setRepoGhError(err);
+        })
+        .finally(() => {
+          setRepoGhLoading(false);
+        })
+    }
+  }, [ghRepoUrl]);
+
+  if (firstLoading || actualLoading || userGhLoading || repoGhLoading) {
     return (
       <div
         style={{
@@ -327,9 +353,9 @@ function InfoCoin() {
       </div>
 
       <div style={{ display: "flex", flexDirection: "row", marginTop: "5%", gap: "7%", width: "100%", height: "120px", alignItems: "center", justifyContent: "center" }}>
-        <GitInfoCard title="Followers" value={userGhData} />
-        <GitInfoCard title="Stars" value={repoGhData[0]} />
-        <GitInfoCard title="Forks" value={repoGhData[1]} />
+        <GitInfoCard title="Followers" value={userGhData || "NaN"} />
+        <GitInfoCard title="Stars" value={repoGhData[0] || "NaN"} />
+        <GitInfoCard title="Forks" value={repoGhData[1] || "NaN"} />
       </div>
     </Container>
   );
